@@ -49,4 +49,12 @@ public class UserServiceImpl implements UserService {
         Integer id = (Integer) map.get("id");
         userMapper.updatePwd(Md5Util.getMD5String(newPwd), id);
     }
+
+    @Override
+    public void pay(Integer lv) {
+        // 等级+lv
+        Map<String,Object> map =  ThreadLocalUtil.get();
+        Integer id = (Integer) map.get("id");
+        userMapper.updateLv(lv, id);
+    }
 }

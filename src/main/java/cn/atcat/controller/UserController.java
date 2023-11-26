@@ -120,4 +120,14 @@ public class UserController {
         return Result.success();
     }
 
+    // 充值升级
+    @PutMapping("pay")
+    public Result pay(Integer money){
+        log.info("充值升级money：{}", money);
+        int lv = money / 10;
+        if (lv <= 0) return Result.error("充值金额不足");
+        userService.pay(lv);
+        return Result.success();
+    }
+
 }

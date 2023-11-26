@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.atcat.mapper.RecruitMapper">
+    <resultMap id="RecruitMapper" type="cn.atcat.pojo.Recruit">
+<!--        <result property="id" column="id"></result>-->
+<!--        <result property="title" column="title"></result>-->
+<!--        <result property="address" column="address"></result>-->
+<!--        <result property="pay" column="pay"></result>-->
+<!--        <result property="company" column="company"></result>-->
+        <result property="condition" column="condition" jdbcType="VARCHAR" javaType="java.util.List" typeHandler="cn.atcat.handler.ListTypeHandler"></result>
+<!--        <result property="content" column="content"></result>-->
+        <result property="tag" column="tag" jdbcType="VARCHAR" javaType="java.util.List" typeHandler="cn.atcat.handler.ListTypeHandler"></result>
+<!--        <result property="state" column="state"></result>-->
+<!--        <result property="imgUrl" column="img_url"></result>-->
+<!--        <result property="type" column="type"></result>-->
+<!--        <result property="categoryId" column="category_id"></result>-->
+<!--        <result property="createUser" column="create_user"></result>-->
+<!--        <result property="createTime" column="create_time"></result>-->
+<!--        <result property="updateTime" column="update_time"></result>-->
+    </resultMap>
+<!--    新增插入add-->
+    <insert id="add" parameterType="cn.atcat.pojo.Recruit">
+        insert into recruit_info (title, address, pay, company, `condition`, content, tag, state, img_url,type, category_id,create_user, create_time, update_time)
+        values (#{title}, #{address}, #{pay}, #{company}, #{condition,typeHandler=cn.atcat.handler.ListTypeHandler}, #{content}, #{tag,typeHandler=cn.atcat.handler.ListTypeHandler}, #{state}, #{imgUrl},#{type}, #{categoryId}, #{createUser}, #{createTime}, #{updateTime})
+    </insert>
+    <select id="list" resultType="cn.atcat.pojo.Recruit" resultMap="RecruitMapper">
+        select * from recruit_info
+        <where>
+            <if test="categoryId!= null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="state!=null">
+                and state = #{state}
+            </if>
+
+            and create_user=#{userId}
+        </where>
+    </select>
+    <select id="getById" resultType="cn.atcat.pojo.Recruit" resultMap="RecruitMapper">
+        select * from recruit_info where id=#{id}
+    </select>
+
+<!--    关于更新的，全部写在这，不管更新哪个都调用这个接口-->
+    <update id="update" parameterType="cn.atcat.pojo.Recruit">
+        update recruit_info
+        <set>
+            <if test="title!=null and title!=''">
+                title=#{title},
+            </if>
+            <if test="address!=null and address!=''">
+                address=#{address},
+            </if>
+            <if test="pay!=null and pay!=''">
+                pay=#{pay},
+            </if>
+            <if test="company!=null and company!=''">
+                company=#{company},
+            </if>
+            <if test="condition!=null">
+                `condition`=#{condition,typeHandler=cn.atcat.handler.ListTypeHandler},
+            </if>
+            <if test="content!=null and content!=''">
+                content=#{content},
+            </if>
+            <if test="tag!=null">
+                tag=#{tag,typeHandler=cn.atcat.handler.ListTypeHandler},
+            </if>
+            <if test="state!=null">
+                state=#{state},
+            </if>
+            <if test="imgUrl!=null and imgUrl!=''">
+                img_url=#{imgUrl},
+            </if>
+            <if test="type!=null">
+                type=#{type},
+            </if>
+            <if test="categoryId!=null">
+                category_id=#{categoryId},
+            </if>
+            <if test="createUser!=null">
+                create_user=#{createUser},
+            </if>
+            <if test="createTime!=null">
+                create_time=#{createTime},
+            </if>
+            <if test="updateTime!=null">
+                update_time=#{updateTime},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <update id="updateState">
+        update recruit_info
+        <set>
+            <if test="state!=null">
+                state=#{state},
+            </if>
+        </set>
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

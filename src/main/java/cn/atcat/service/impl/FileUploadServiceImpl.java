@@ -1,5 +1,6 @@
 package cn.atcat.service.impl;
 
+import cn.atcat.common.QiniuConfig;
 import cn.atcat.service.FileUploadService;
 import cn.atcat.utils.FileUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -9,25 +10,36 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.util.UUID;
 
 @Slf4j
 @Service
 public class FileUploadServiceImpl implements FileUploadService {
-
-    private String ACCESS_KEY = "7KlGh_ZbfPBjHt981aHqWu4wmIrf3gJJuY0G94_y";
-    private String SECREt_KEY = "xYMWWF9IU-CXh4pDYtnsHsKq7jnmPqqzRHiltN1j";
-    private String BUCKET_NAME = "atcat";
-    private static String QINIU_IMAGE_DOMAIN = "http://niu.atcat.cn/";
+    @Autowired
+    private QiniuConfig qiniuConfig;
+    private String ACCESS_KEY;
+    private String SECREt_KEY;
+    private String BUCKET_NAME;
+    private String QINIU_IMAGE_DOMAIN;
     // 密钥配置
-    Auth auth = Auth.create(ACCESS_KEY, SECREt_KEY);
-    Configuration cfg = new Configuration(Zone.zone2());
-    UploadManager uploadManager = new UploadManager(cfg);
-
-    // 使用的是测试域名
+    Auth auth;
+    Configuration cfg;
+    UploadManager uploadManager;
+    @PostConstruct
+    public void init() {
+        ACCESS_KEY = qiniuConfig.getAccessKey();
+        SECREt_KEY = qiniuConfig.getSecretKey();
+        BUCKET_NAME = qiniuConfig.getBucketName();
+        QINIU_IMAGE_DOMAIN = qiniuConfig.getPath();
+        auth = Auth.create(ACCESS_KEY, SECREt_KEY);
+        cfg = new Configuration(Zone.zone2());
+        uploadManager = new UploadManager(cfg);
+    }
 
     public String getUpToken(){
         return auth.uploadToken(BUCKET_NAME);

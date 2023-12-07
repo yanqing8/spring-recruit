@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.atcat.mapper.CategoryMapper">
+    <delete id="deleteCategoryByUserId">
+        delete from category where category.create_user in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+<!--     查询当前已登录用户和管理员创建的所有职业分类
+        SELECT c.*
+        FROM category c
+        JOIN user u ON c.create_user = u.id
+        WHERE u.id = #{id} OR u.role = 0
+        ORDER BY
+          CASE WHEN u.role = 0 THEN 1 ELSE 0 END, - 将管理员的记录放在最后
+        c.update_time DESC;-->
+    <select id="getCategoryList" resultType="cn.atcat.pojo.Category">
+        select c.*
+        from category c
+        join user u on c.create_user = u.id
+        <where>
+            <if test="id != null">
+                and u.id = #{id}
+            </if>
+        </where>
+        order by
+        case when u.role = 0 then 1 else 0 end,
+        c.update_time desc;
+    </select>
+</mapper>

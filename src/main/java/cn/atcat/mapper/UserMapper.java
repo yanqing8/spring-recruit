@@ -6,16 +6,15 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
     @Select("select * from user where username = #{username}")
     User findUserByUsername(String username);
 
-    @Insert("insert into user(username,password,role,create_time,update_time)" +
-            " values(#{username},#{md5String},#{role},now(),now())")
-    void add(String username, String md5String, Integer role);
-
-    @Update("update user set nickname=#{nickname},email=#{email},update_time=#{updateTime} where id=#{id}")
+    @Insert("insert into user(username,password,nickname, email, role,create_time,update_time) values(#{username},#{password},#{nickname},#{email}, #{role},#{createTime},#{updateTime})")
+    void add(User user);
     void update(User user);
 
     @Update("update user set user_pic=#{avatarUrl},update_time=now() where id=#{id}")
@@ -23,7 +22,13 @@ public interface UserMapper {
 
     @Update("update user set password=#{md5String},update_time=now() where id=#{id}")
     void updatePwd(String md5String, Integer id);
+    List<User> userList(Integer role, String otherParam);
 
-    @Update("update user set level=level+#{lv},update_time=now() where id=#{id}")
-    void updateLv(Integer lv, Integer id);
+    void delete(List<Integer> ids);
+
+    @Update("update user set level = #{lv} where id = #{userId}")
+    void updateLv(Integer userId, Integer lv);
+
+    @Select("select * from user where id = #{id}")
+    User findUserById(Integer id);
 }

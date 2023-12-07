@@ -1,0 +1,32 @@
+{
+  "groups": [
+    {
+      "name": "alipay",
+      "type": "cn.atcat.common.AliPayConfig",
+      "sourceType": "cn.atcat.common.AliPayConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "alipay.alipay-public-key",
+      "type": "java.lang.String",
+      "sourceType": "cn.atcat.common.AliPayConfig"
+    },
+    {
+      "name": "alipay.app-id",
+      "type": "java.lang.String",
+      "sourceType": "cn.atcat.common.AliPayConfig"
+    },
+    {
+      "name": "alipay.app-private-key",
+      "type": "java.lang.String",
+      "sourceType": "cn.atcat.common.AliPayConfig"
+    },
+    {
+      "name": "alipay.notify-url",
+      "type": "java.lang.String",
+      "sourceType": "cn.atcat.common.AliPayConfig"
+    }
+  ],
+  "hints": []
+}

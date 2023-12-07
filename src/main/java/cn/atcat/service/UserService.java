@@ -1,6 +1,9 @@
 package cn.atcat.service;
 
+import cn.atcat.pojo.PageBean;
 import cn.atcat.pojo.User;
+
+import java.util.List;
 
 public interface UserService {
     User findUserByUsername(String username);
@@ -13,5 +16,12 @@ public interface UserService {
 
     void updatePwd(String newPwd);
 
-    void pay(Integer lv);
+    PageBean<User> userList(Integer pageNum, Integer pageSize, Integer role, String otherParam);
+
+    void delete(List<Integer> ids);
+    void add(User user);
+
+    User findUserById(Integer id);
+
+    void resetPwd(Integer id);
 }

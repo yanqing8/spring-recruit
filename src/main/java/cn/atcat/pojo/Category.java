@@ -15,7 +15,6 @@ public class Category {
     private Integer id;//主键ID
     @NotEmpty
     private String categoryName;//分类名称
-    @JsonIgnore
     private Integer createUser;//创建人ID
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;//创建时间

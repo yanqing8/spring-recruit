@@ -32,16 +32,17 @@ public class RecruitServiceImpl implements RecruitService {
         recruitMapper.add(recruit);
     }
 
+    // 前台查询招聘或求职信息列表，不需要传入userId
+
+
     @Override
-    public PageBean<Recruit> getList(Integer pageNum, Integer pageSize, Integer categoryId, Integer state) {
+    public PageBean<Recruit> getList(Integer pageNum, Integer pageSize, Integer type, Integer userId, Integer categoryId, Integer state, Integer sortOrd, String otherParam) {
         // 创建pageBean对象
         PageBean<Recruit> pageBean = new PageBean<>();
         // 开启分页查询 PageHelper
         PageHelper.startPage(pageNum, pageSize);
         // 调用Mapper查询
-        Map<String, Object> map = ThreadLocalUtil.get();
-        Integer userId = (Integer) map.get("id");
-        List<Recruit> rs = recruitMapper.list(categoryId, state, userId);
+        List<Recruit> rs = recruitMapper.list(type,userId,categoryId, state,sortOrd,otherParam);
         Page<Recruit> p = (Page<Recruit>) rs;
 
         // 把数据填充到PageBean中
@@ -61,14 +62,13 @@ public class RecruitServiceImpl implements RecruitService {
         recruit.setUpdateTime(LocalDateTime.now());
         recruitMapper.update(recruit);
     }
-
-    @Override
-    public void delete(Integer id) {
-        recruitMapper.delete(id);
-    }
-
     @Override
     public void updateState(List<Integer> ids, Integer state) {
         recruitMapper.updateState(ids, state);
+    }
+
+    @Override
+    public void delete(List<Integer> ids) {
+        recruitMapper.delete(ids);
     }
 }

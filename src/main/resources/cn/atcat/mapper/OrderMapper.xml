@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.atcat.mapper.OrderMapper">
+    <select id="selectByGoodsIdAndState" resultType="cn.atcat.pojo.Orders">
+        select * from orders
+        <where>
+            <if test="state != null and state != ''">
+                and state = #{state}
+            </if>
+            <if test="goodsId != null">
+                and goods_id = #{goodsId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="list" resultType="cn.atcat.pojo.Orders">
+        select * from orders
+        <where>
+            <if test="state != null and state != ''">
+                and state = #{state}
+            </if>
+            <if test="orderId != null and orderId != ''">
+                and order_id like concat('%', #{orderId}, '%')
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+    <update id="updateState">
+        update orders
+        <set>
+            <if test="state != null and state != ''">
+                state = #{state},
+            </if>
+            create_time = now()
+        </set>
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

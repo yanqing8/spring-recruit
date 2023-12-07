@@ -23,14 +23,17 @@ public class LoginInterceptor implements HandlerInterceptor {
         // 令牌验证
         String token = request.getHeader("Authorization");
         try{
+            // 解析token
+            Map<String,Object> claims = JwtUtil.parseToken(token);
+            ThreadLocalUtil.set(claims);
+
             //从redis中查验token
             ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-            String redisToken = operations.get(token);
+            String redisToken = operations.get("userToken" + claims.get("id"));
             if(redisToken == null){ // 已失效
                 throw new RuntimeException();
             }
-            Map<String,Object> claims = JwtUtil.parseToken(token);
-            ThreadLocalUtil.set(claims);
+
             // 放行
             return true;
         } catch (Exception e) {

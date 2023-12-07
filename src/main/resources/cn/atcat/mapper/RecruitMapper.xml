@@ -22,21 +22,41 @@
     </resultMap>
 <!--    新增插入add-->
     <insert id="add" parameterType="cn.atcat.pojo.Recruit">
-        insert into recruit_info (title, address, pay, company, `condition`, content, tag, state, img_url,type, category_id,create_user, create_time, update_time)
-        values (#{title}, #{address}, #{pay}, #{company}, #{condition,typeHandler=cn.atcat.handler.ListTypeHandler}, #{content}, #{tag,typeHandler=cn.atcat.handler.ListTypeHandler}, #{state}, #{imgUrl},#{type}, #{categoryId}, #{createUser}, #{createTime}, #{updateTime})
+        insert into recruit_info (title, address, pay_min,pay_max, company, `condition`, content, tag, state, img_url,type, category_id,create_user, create_time, update_time)
+        values (#{title}, #{address}, #{payMin}, #{payMax}, #{company}, #{condition,typeHandler=cn.atcat.handler.ListTypeHandler}, #{content}, #{tag,typeHandler=cn.atcat.handler.ListTypeHandler}, #{state}, #{imgUrl},#{type}, #{categoryId}, #{createUser}, #{createTime}, #{updateTime})
     </insert>
     <select id="list" resultType="cn.atcat.pojo.Recruit" resultMap="RecruitMapper">
-        select * from recruit_info
+        select ri.*, c.category_name
+        from recruit_info ri join category c on ri.category_id=c.id
         <where>
             <if test="categoryId!= null">
-                and category_id = #{categoryId}
+                and ri.category_id = #{categoryId}
             </if>
             <if test="state!=null">
-                and state = #{state}
+                and ri.state = #{state}
             </if>
-
-            and create_user=#{userId}
+            <if test="type!=null">
+                and ri.type = #{type}
+            </if>
+            <if test="userId!=null">
+                and ri.create_user = #{userId}
+            </if>
+            <if test="otherParam!=null and otherParam!=''">
+                and (ri.title LIKE CONCAT('%', #{otherParam}, '%')
+                OR ri.address LIKE CONCAT('%', #{otherParam}, '%')
+                OR ri.company LIKE CONCAT('%', #{otherParam}, '%')
+                OR ri.condition LIKE CONCAT('%', #{otherParam}, '%')
+                OR ri.content LIKE CONCAT('%', #{otherParam}, '%'))
+            </if>
         </where>
+        <choose>
+            <when test="sortOrd!=null and sortOrd == 1">
+                order by ri.pay_max desc
+            </when>
+            <otherwise>
+                order by ri.update_time desc
+            </otherwise>
+        </choose>
     </select>
     <select id="getById" resultType="cn.atcat.pojo.Recruit" resultMap="RecruitMapper">
         select * from recruit_info where id=#{id}
@@ -52,8 +72,11 @@
             <if test="address!=null and address!=''">
                 address=#{address},
             </if>
-            <if test="pay!=null and pay!=''">
-                pay=#{pay},
+            <if test="payMin!=null">
+                pay_min=#{payMin},
+            </if>
+            <if test="payMax!=null">
+                pay_max=#{payMax},
             </if>
             <if test="company!=null and company!=''">
                 company=#{company},
@@ -98,10 +121,25 @@
             <if test="state!=null">
                 state=#{state},
             </if>
+            update_time=now()
         </set>
         where id in
         <foreach collection="ids" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
     </update>
+
+    <delete id="deleteRecruitByUserId">
+        delete from recruit_info where create_user in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="delete">
+        delete from recruit_info where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>

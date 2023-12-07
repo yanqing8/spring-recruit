@@ -29,7 +29,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> getCategoryList() {
         Map<String, Object> map = ThreadLocalUtil.get();
-        Integer id = (Integer) map.get("id");
+        Integer id = null;
+        if(map != null && map.get("id") != null){
+            id = (Integer) map.get("id");
+        }
         List<Category> list = categoryMapper.getCategoryList(id);
         return list;
     }

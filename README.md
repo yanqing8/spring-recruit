@@ -1,6 +1,7 @@
 # 招聘系统后端SpringBoot项目
 前端项目地址：[传送门](https://github.com/yanqing8/vue-recruit)
 
+如果能帮到你可以帮忙点个小星星吗？
 ## 环境要求
 
 - Java 17

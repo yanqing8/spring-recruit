@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -164,10 +165,10 @@ public class UserController {
         User user = new User();
         // 判断params中是否有id，有则是修改，没有则是新增
         if (params.get("id") != null) {
-            Integer id = Integer.parseInt((String) params.get("id"));
+            Integer id = Integer.parseInt(params.get("id"));
             // 校验用户名是否已经占用
             User existingUser = userService.findUserByUsername(username);
-            if (existingUser != null && existingUser.getId() != id) return Result.error("用户名已被占用");
+            if (existingUser != null && !Objects.equals(existingUser.getId(), id)) return Result.error("用户名已被占用");
 
             user = userService.findUserById(id);
             user.setUsername(username);

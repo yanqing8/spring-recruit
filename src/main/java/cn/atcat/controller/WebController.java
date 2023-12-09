@@ -10,6 +10,6 @@ public class WebController {
 
     @GetMapping
     public String hello(){
-        return "欢迎你的访问···，前端请访问10.22.111.160:5173";
+        return "欢迎你的访问···，当前地址为后端服务，前端请访问localhost:5173";
     }
 }

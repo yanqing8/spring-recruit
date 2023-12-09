@@ -16,6 +16,7 @@ spring:
 
 mybatis:
   configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 开启mybatis日志
     map-underscore-to-camel-case: true # 开启驼峰命名和下划线的转换
 
 alipay:

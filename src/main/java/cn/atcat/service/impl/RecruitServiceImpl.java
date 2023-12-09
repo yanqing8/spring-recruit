@@ -71,4 +71,6 @@ public class RecruitServiceImpl implements RecruitService {
     public void delete(List<Integer> ids) {
         recruitMapper.delete(ids);
     }
+
+
 }
